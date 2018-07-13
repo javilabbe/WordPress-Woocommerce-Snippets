@@ -1,0 +1,36 @@
+<?php
+
+/**
+ * Email recipient based on a custom field value in WooCommerce
+ *
+ * Send New Order Notificaiton to a specified recipient's email address based
+ * on the selection of the custom field option chosen during checkout.
+ * This filter allows for 4 options and recipients. However, you can add as many as you want.
+ * Please add this filter to your site's child theme
+ * Tested on WC @version 3.4.3
+ */
+ 
+ 
+add_filter( 'woocommerce_email_recipient_new_order', 'new_order_conditional_email_recipient', 10, 2 );
+function new_order_conditional_email_recipient( $recipient, $order ) {
+
+    // Get the order ID (retro compatible)
+    $order_id = method_exists( $order, 'get_id' ) ? $order->get_id() : $order->id;
+
+    // Get the custom field value (with the right $order_id)
+    $custom_field_option = get_post_meta($order_id, 'custom_field_option', true);
+
+    if ($custom_field_option == "option_1") 
+        $recipient .= ', email_1@gmail.com'; 
+
+    elseif ($custom_field_option == "option_2") 
+        $recipient .= ', email_2@gmail.com';
+
+    elseif ($custom_field_option == "option_3") 
+        $recipient .= ', email_3@gmail.com';
+
+    elseif ($custom_field_option == "option_4") 
+        $recipient .= ', email_4@gmail.com';
+
+    return $recipient;
+}
